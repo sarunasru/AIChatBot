@@ -192,6 +192,7 @@ body {
     padding: 10px 14px;
     font-size: 14.5px;
     font-family: inherit;
+    min-height: 60px;
     max-height: 140px;
     line-height: 1.4;
     outline: none;
