@@ -18,8 +18,8 @@
 
     const origin = new URL(currentScript.src).origin;
 
-    // static/Simas.png plus the "Bibliotekininkas Simas" label bar below it, both transparent.
-    const COLLAPSED = { width: "220px", height: "215px", borderRadius: "0" };
+    // static/Simas.png + label bar, plus a small row above for the dismiss "x", both transparent.
+    const COLLAPSED = { width: "220px", height: "234px", borderRadius: "0" };
 
     function getExpandedSize() {
         if (window.innerWidth <= 480 || window.innerHeight <= 500) {
@@ -62,7 +62,10 @@
 
         if (data.state === "expanded") {
             applySize(getExpandedSize());
+        } else if (data.state === "dismissed") {
+            iframe.style.display = "none";
         } else {
+            iframe.style.display = "";
             iframe.style.bottom = "20px";
             iframe.style.right = "20px";
             applySize(COLLAPSED);

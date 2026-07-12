@@ -8,10 +8,13 @@
     <link rel="stylesheet" href="/static/widget.css">
 </head>
 <body class="widget-body">
-    <button id="launcher-btn" class="launcher-btn" type="button" aria-label="Atidaryti pokalbį su asistentu">
-        <img src="/static/Simas.png" alt="Virtualus asistentas Simas">
-        <span class="launcher-label">Bibliotekininkas Simas</span>
-    </button>
+    <div id="launcher-wrap" class="launcher-wrap">
+        <button id="dismiss-btn" class="dismiss-btn" type="button" aria-label="Paslėpti asistento mygtuką">&#10005;</button>
+        <button id="launcher-btn" class="launcher-btn" type="button" aria-label="Atidaryti pokalbį su asistentu">
+            <img src="/static/Simas.png" alt="Virtualus asistentas Simas">
+            <span class="launcher-label">Bibliotekininkas Simas</span>
+        </button>
+    </div>
 
     <div id="widget-panel" class="widget-panel hidden">
         <div class="chat-app">

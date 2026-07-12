@@ -10,9 +10,37 @@ body.widget-body {
     min-height: 0;
 }
 
-.launcher-btn {
+.launcher-wrap {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+}
+
+.launcher-wrap.hidden {
+    display: none;
+}
+
+.dismiss-btn {
+    align-self: flex-end;
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1;
+    padding: 4px 6px;
+    cursor: pointer;
+}
+
+.dismiss-btn:hover {
+    color: var(--text);
+}
+
+.launcher-btn {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
     border: none;
     background: transparent;
     padding: 0;
@@ -47,10 +75,6 @@ body.widget-body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.launcher-btn.hidden {
-    display: none;
 }
 
 .widget-panel {
