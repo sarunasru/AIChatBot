@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<title>Mock VU Faculty Page</title>
+<style>
+  body { font-family: Georgia, serif; background: #7a0019; color: #fff; margin: 0; padding: 40px; }
+  h1 { font-size: 40px; }
+  p { max-width: 600px; }
+  /* Intentionally clashing styles to prove the widget iframe is unaffected */
+  button { background: black !important; color: lime !important; border-radius: 0 !important; }
+  * { box-shadow: none !important; }
+</style>
+</head>
+<body>
+  <h1>Vilniaus Universitetas — Fakulteto Puslapis (mock)</h1>
+  <p>This page intentionally has aggressive global CSS (red background, black/lime buttons,
+     no border-radius, serif font) to prove the embedded widget renders with its own
+     untouched styling.</p>
+
+  <script src="http://localhost:8000/static/widget.js" async></script>
+</body>
+</html>

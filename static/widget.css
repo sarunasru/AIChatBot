@@ -1,0 +1,98 @@
+/* Layout overrides for the embedded widget (served inside the VU sites' iframe). */
+
+html,
+body.widget-body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    display: block;
+    min-height: 0;
+}
+
+.launcher-btn {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.launcher-btn img {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 16px var(--shadow));
+    transition: transform 0.15s ease;
+}
+
+.launcher-btn:hover img {
+    transform: scale(1.02);
+}
+
+.launcher-label {
+    flex: 0 0 auto;
+    width: 100%;
+    background: #78003f;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.launcher-btn.hidden {
+    display: none;
+}
+
+.widget-panel {
+    width: 100%;
+    height: 100%;
+}
+
+.widget-panel.hidden {
+    display: none;
+}
+
+.widget-panel .chat-app {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+}
+
+.chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.minimize-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 15px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.minimize-btn:hover {
+    background: #f3f4f6;
+    color: var(--text);
+}
+
+@media (max-width: 480px) {
+    .widget-panel .chat-app {
+        border-radius: 0;
+        border: none;
+    }
+}

@@ -1,0 +1,3 @@
+simas.private-search.online {
+    reverse_proxy faq-assistant:8000
+}

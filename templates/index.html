@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualus DI asistentas Simas</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-app">
+        <header class="chat-header">
+            <div class="chat-header-title">
+                <span class="chat-header-dot"></span>
+                <h1>Virtualus DI asistentas Simas</h1>
+            </div>
+            <button id="clear-btn" class="clear-btn" type="button">Išvalyti pokalbį</button>
+        </header>
+
+        <main id="messages" class="messages" aria-live="polite">
+            <div class="message assistant">
+                <div class="bubble">Sveiki! Klauskite manęs bet ko apie mūsų biblioteka ir jos paslaugas – mielai padėsiu.</div>
+            </div>
+        </main>
+
+        <div id="loading-indicator" class="loading-indicator hidden">
+            <span></span><span></span><span></span>
+        </div>
+
+        <footer class="chat-input-area">
+            <textarea
+                id="message-input"
+                class="message-input"
+                placeholder="Įveskite klausimą... (Enter siųsti, Shift+Enter nauja eilutė)"
+                rows="1"
+            ></textarea>
+            <button id="send-btn" class="send-btn" type="button" aria-label="Siųsti žinutę">
+                Siųsti
+            </button>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
