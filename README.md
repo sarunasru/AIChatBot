@@ -1,8 +1,8 @@
 # AI FAQ Assistant
 
-A lightweight web application that answers customer questions using an LLM API (any
-OpenAI-compatible provider — OpenAI, OpenRouter, etc.), grounded strictly in company
-knowledge stored in local Markdown/text files.
+A lightweight web application that answers customer questions using an LLM via
+[OpenRouter](https://openrouter.ai), grounded strictly in company knowledge stored in local
+Markdown/text files.
 
 This is **not** a RAG project — there are no vector databases, embeddings, or external
 retrieval frameworks. The entire knowledge base is loaded into memory once at startup and
@@ -19,7 +19,8 @@ project/
 │   ├── knowledge_loader.py  # Loads & caches knowledge/ files in memory
 │   ├── prompts.py           # System prompt template
 │   ├── config.py            # Settings loaded from .env
-│   └── rate_limit.py        # Shared slowapi Limiter instance
+│   ├── rate_limit.py        # Shared slowapi Limiter instance
+│   └── email_sender.py      # Contact-form email (Resend / SMTP)
 ├── knowledge/                # Company knowledge (.md / .txt files)
 │   ├── company.md
 │   ├── faq.md
@@ -123,14 +124,32 @@ docker-compose.prod.yml up -d --build`).
 
 | Variable          | Description                                                        | Default                          |
 |--------------------|---------------------------------------------------------------------|-----------------------------------|
-| `LLM_API_KEY`      | Your API key for the LLM provider (OpenAI, OpenRouter, etc.)         | (none)                            |
-| `LLM_BASE_URL`     | API base URL. Leave empty for OpenAI; use `https://openrouter.ai/api/v1` for OpenRouter | (OpenAI default) |
-| `MODEL`            | Chat model to use (OpenRouter uses `provider/model` slugs)          | `gpt-5.5`                         |
+| `LLM_API_KEY`      | Your OpenRouter API key                                              | (none)                            |
+| `LLM_BASE_URL`     | OpenRouter API base URL                                              | `https://openrouter.ai/api/v1`    |
+| `MODEL`            | Chat model to use (OpenRouter `provider/model` slug)                | `google/gemini-3.1-flash-lite`    |
 | `TEMPERATURE`      | Sampling temperature                                                 | `0.2`                             |
 | `MAX_TOKENS`       | Max tokens in the generated reply                                    | `1000`                            |
 | `REQUEST_TIMEOUT`  | Timeout (seconds) for LLM API requests                               | `30`                              |
 | `WIDGET_FRAME_ANCESTORS` | CSP `frame-ancestors` source list — which origins may `<iframe>` `/widget` | `'self'` |
 | `CHAT_RATE_LIMIT` | Per-IP limit on `POST /chat` (slowapi syntax, e.g. `10/minute`) | `10/minute` |
+| `CONTACT_TO_EMAIL` | Where "Contact staff" messages are delivered | (none) |
+| `CONTACT_FROM_EMAIL` | From address for those emails (use one the SMTP server may send for) | (none) |
+| `CONTACT_RATE_LIMIT` | Per-IP limit on `POST /contact` | `5/hour` |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USERNAME` / `SMTP_PASSWORD` / `SMTP_USE_TLS` | SMTP relay used to send the contact emails | `-` / `587` / `-` / `-` / `true` |
+
+## Contact Form (email to staff)
+
+The chat header has a **"Contact staff"** button that opens a form where a visitor can send
+their email + message, with the chat transcript attached, to library staff. The message is
+sent by `app/email_sender.py` through a plain **SMTP relay** — a mailbox provider's SMTP now,
+or an institutional `@vu.lt` mail server in production. Point it at a different server by
+changing the `SMTP_*` variables; no code change is needed.
+
+Set `CONTACT_TO_EMAIL` (staff inbox), `CONTACT_FROM_EMAIL` (an address the SMTP server is
+allowed to send for — usually the mailbox's own domain), and the `SMTP_*` connection details
+(`SMTP_USERNAME` is normally the full email address). If email isn't configured, the
+button/form still render but sending returns a friendly error. The endpoint is rate-limited
+(`CONTACT_RATE_LIMIT`) and requires an explicit consent checkbox before it forwards anything.
 
 ## Embedding on Other Websites (e.g. VU Faculty Pages)
 

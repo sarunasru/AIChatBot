@@ -32,6 +32,7 @@ body {
 }
 
 .chat-app {
+    position: relative;
     width: 100%;
     max-width: 720px;
     height: min(85vh, 860px);
@@ -73,6 +74,12 @@ body {
     display: inline-block;
 }
 
+.chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .clear-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -87,6 +94,185 @@ body {
 .clear-btn:hover {
     background: #f3f4f6;
     color: var(--text);
+}
+
+.contact-btn {
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: var(--primary-text);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.contact-btn:hover {
+    opacity: 0.9;
+}
+
+/* --- Contact form overlay --- */
+.contact-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 10;
+}
+
+.contact-overlay.hidden {
+    display: none;
+}
+
+.contact-panel {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 20px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 100%;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.25);
+}
+
+.contact-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.contact-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.contact-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+.contact-close:hover {
+    color: var(--text);
+}
+
+.contact-intro {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin: 0 0 14px;
+}
+
+.contact-field {
+    display: block;
+    margin-bottom: 12px;
+}
+
+.contact-field span {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.contact-field input,
+.contact-field textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.15s ease;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+    border-color: var(--primary);
+}
+
+.contact-consent {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.contact-consent input {
+    margin-top: 2px;
+    flex: 0 0 auto;
+    accent-color: var(--primary);
+}
+
+.contact-status {
+    font-size: 13px;
+    color: var(--text-muted);
+    min-height: 18px;
+    margin-bottom: 10px;
+}
+
+.contact-status.success {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.contact-cancel {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.contact-cancel:hover {
+    background: #f3f4f6;
+    color: var(--text);
+}
+
+.contact-submit {
+    background: var(--primary);
+    color: var(--primary-text);
+    border: none;
+    border-radius: 10px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.contact-submit:hover {
+    opacity: 0.9;
+}
+
+.contact-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .messages {

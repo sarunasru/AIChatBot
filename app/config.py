@@ -39,7 +39,7 @@ class Settings:
 
     api_key: str = os.getenv("LLM_API_KEY", "")
     base_url: str | None = os.getenv("LLM_BASE_URL") or None
-    model: str = os.getenv("MODEL", "gpt-5.5")
+    model: str = os.getenv("MODEL", "google/gemini-3.1-flash-lite")
     temperature: float = _get_float("TEMPERATURE", 0.2)
     max_tokens: int = _get_int("MAX_TOKENS", 1000)
     request_timeout: float = _get_float("REQUEST_TIMEOUT", 30.0)
@@ -52,6 +52,24 @@ class Settings:
     # Per-IP limit on POST /chat, in slowapi's "N/period" syntax (e.g. "10/minute").
     # Protects against a single client running up the LLM bill via scripted requests.
     chat_rate_limit: str = os.getenv("CHAT_RATE_LIMIT", "10/minute")
+
+    # --- Contact form / email (SMTP) --------------------------------------
+    # Where staff-contact messages are delivered, and the From address they
+    # appear to come from. contact_from_email should be on a domain the SMTP
+    # server is authorised to send for (e.g. the mailbox's own domain).
+    contact_to_email: str = os.getenv("CONTACT_TO_EMAIL", "")
+    contact_from_email: str = os.getenv("CONTACT_FROM_EMAIL", "")
+
+    # Per-IP limit on POST /contact. Sending email is an abuse magnet, so this
+    # is deliberately much stricter than the chat limit.
+    contact_rate_limit: str = os.getenv("CONTACT_RATE_LIMIT", "5/hour")
+
+    # SMTP relay used to send the contact emails.
+    smtp_host: str = os.getenv("SMTP_HOST", "")
+    smtp_port: int = _get_int("SMTP_PORT", 587)
+    smtp_username: str = os.getenv("SMTP_USERNAME", "")
+    smtp_password: str = os.getenv("SMTP_PASSWORD", "")
+    smtp_use_tls: bool = os.getenv("SMTP_USE_TLS", "true").strip().lower() in ("1", "true", "yes")
 
 
 settings = Settings()

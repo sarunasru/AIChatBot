@@ -7,7 +7,9 @@
     const inputEl = document.getElementById("message-input");
     const sendBtn = document.getElementById("send-btn");
     const clearBtn = document.getElementById("clear-btn");
+    const contactBtn = document.getElementById("contact-btn");
     const loadingEl = document.getElementById("loading-indicator");
+    const chatAppEl = document.querySelector(".chat-app");
 
     /** @type {{role: "user" | "assistant", content: string}[]} */
     let history = loadHistory();
@@ -129,6 +131,133 @@
             "assistant",
             "Sveiki! Klauskite manęs bet ko apie mūsų biblioteka ir jos paslaugas – mielai padėsiu."
         );
+    }
+
+    // --- Contact form ------------------------------------------------------
+    let contactOverlay = null;
+
+    function buildContactForm() {
+        const overlay = document.createElement("div");
+        overlay.className = "contact-overlay hidden";
+        overlay.innerHTML = `
+            <div class="contact-panel">
+                <div class="contact-header">
+                    <h2>Susisiekti su darbuotoju</h2>
+                    <button type="button" class="contact-close" aria-label="Uždaryti">&#10005;</button>
+                </div>
+                <p class="contact-intro">
+                    Jei asistentas neatsakė į jūsų klausimą, palikite savo el. paštą ir žinutę –
+                    ją kartu su pokalbio istorija persiųsime bibliotekos darbuotojui.
+                </p>
+                <label class="contact-field">
+                    <span>Jūsų el. paštas *</span>
+                    <input type="email" class="contact-email" required maxlength="254" autocomplete="email">
+                </label>
+                <label class="contact-field">
+                    <span>Vardas</span>
+                    <input type="text" class="contact-name" maxlength="120" autocomplete="name">
+                </label>
+                <label class="contact-field">
+                    <span>Žinutė *</span>
+                    <textarea class="contact-message" rows="4" required maxlength="4000"></textarea>
+                </label>
+                <label class="contact-consent">
+                    <input type="checkbox" class="contact-consent-box">
+                    <span>Sutinku, kad mano žinutė ir pokalbio istorija būtų persiųsti bibliotekos darbuotojui.</span>
+                </label>
+                <div class="contact-status" role="alert"></div>
+                <div class="contact-actions">
+                    <button type="button" class="contact-cancel">Atšaukti</button>
+                    <button type="button" class="contact-submit">Siųsti</button>
+                </div>
+            </div>
+        `;
+        chatAppEl.appendChild(overlay);
+
+        overlay.querySelector(".contact-close").addEventListener("click", closeContactForm);
+        overlay.querySelector(".contact-cancel").addEventListener("click", closeContactForm);
+        overlay.querySelector(".contact-submit").addEventListener("click", submitContactForm);
+        overlay.addEventListener("click", (event) => {
+            if (event.target === overlay) {
+                closeContactForm();
+            }
+        });
+
+        return overlay;
+    }
+
+    function openContactForm() {
+        if (!contactOverlay) {
+            contactOverlay = buildContactForm();
+        }
+        // Prefill the message with the visitor's last question, if any.
+        const lastUser = [...history].reverse().find((entry) => entry.role === "user");
+        const messageEl = contactOverlay.querySelector(".contact-message");
+        if (lastUser && !messageEl.value) {
+            messageEl.value = lastUser.content;
+        }
+        const statusEl = contactOverlay.querySelector(".contact-status");
+        statusEl.textContent = "";
+        statusEl.classList.remove("success");
+        contactOverlay.classList.remove("hidden");
+        contactOverlay.querySelector(".contact-email").focus();
+    }
+
+    function closeContactForm() {
+        if (contactOverlay) {
+            contactOverlay.classList.add("hidden");
+        }
+    }
+
+    async function submitContactForm() {
+        const email = contactOverlay.querySelector(".contact-email").value.trim();
+        const name = contactOverlay.querySelector(".contact-name").value.trim();
+        const message = contactOverlay.querySelector(".contact-message").value.trim();
+        const consent = contactOverlay.querySelector(".contact-consent-box").checked;
+        const statusEl = contactOverlay.querySelector(".contact-status");
+        const submitEl = contactOverlay.querySelector(".contact-submit");
+
+        statusEl.classList.remove("success");
+
+        if (!email || !message) {
+            statusEl.textContent = "Užpildykite el. paštą ir žinutę.";
+            return;
+        }
+        if (!consent) {
+            statusEl.textContent = "Turite sutikti, kad žinutė būtų persiųsta.";
+            return;
+        }
+
+        submitEl.disabled = true;
+        statusEl.textContent = "Siunčiama...";
+
+        try {
+            const response = await fetch("/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, name, message, consent, history }),
+            });
+            const data = await response.json();
+
+            if (!response.ok) {
+                statusEl.textContent = data.error || "Nepavyko išsiųsti. Bandykite dar kartą.";
+                return;
+            }
+
+            statusEl.classList.add("success");
+            statusEl.textContent = "Žinutė išsiųsta! Su jumis susisieksime el. paštu.";
+            contactOverlay.querySelector(".contact-message").value = "";
+            contactOverlay.querySelector(".contact-consent-box").checked = false;
+            setTimeout(closeContactForm, 1800);
+        } catch {
+            statusEl.textContent = "Nepavyko pasiekti serverio. Bandykite dar kartą.";
+        } finally {
+            submitEl.disabled = false;
+        }
+    }
+
+    if (contactBtn) {
+        contactBtn.addEventListener("click", openContactForm);
     }
 
     sendBtn.addEventListener("click", sendMessage);

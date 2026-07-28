@@ -4,11 +4,13 @@ The rest of the application must never call the LLM client SDK directly -
 it should only ever call `answer()`. This keeps future model or provider
 changes isolated to a single file.
 
-Uses the `openai` package as a client, since its chat-completions format is
-the de facto standard implemented by OpenAI, OpenRouter, and most other
-providers - swap LLM_BASE_URL in .env to point at a different one.
+The `openai` package below is used purely as a generic client for OpenRouter's
+chat-completions API; point it at a different compatible endpoint by changing
+LLM_BASE_URL in .env.
 """
 
+# The `openai` package is just the client library for the OpenRouter API here;
+# `OpenAI` is the client class, pointed at LLM_BASE_URL (OpenRouter) in _get_client.
 from openai import (
     APIConnectionError,
     APIStatusError,

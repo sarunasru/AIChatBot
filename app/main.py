@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 from fastapi import FastAPI, Request
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -62,7 +63,9 @@ async def validation_exception_handler(
     request: Request, exc: RequestValidationError
 ) -> JSONResponse:
     """Return a clean JSON error for malformed or invalid requests."""
+    # jsonable_encoder strips non-serializable bits (e.g. the raw ValueError that
+    # pydantic v2 puts in each error's "ctx") that would otherwise crash json.dumps.
     return JSONResponse(
         status_code=422,
-        content={"error": "Neteisinga užklausa.", "details": exc.errors()},
+        content={"error": "Neteisinga užklausa.", "details": jsonable_encoder(exc.errors())},
     )
