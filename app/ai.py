@@ -9,6 +9,8 @@ chat-completions API; point it at a different compatible endpoint by changing
 LLM_BASE_URL in .env.
 """
 
+import re
+
 # The `openai` package is just the client library for the OpenRouter API here;
 # `OpenAI` is the client class, pointed at LLM_BASE_URL (OpenRouter) in _get_client.
 from openai import (
@@ -106,4 +108,22 @@ def answer(question: str, history: list[Message]) -> str:
     if not reply:
         raise AIRequestError("AI paslauga grąžino tuščią atsakymą.")
 
-    return reply.strip()
+    return _strip_markdown(reply.strip())
+
+
+def _strip_markdown(text: str) -> str:
+    """Remove Markdown formatting so replies are shown as clean plain text.
+
+    The system prompt already asks for plain text, but models occasionally slip in
+    emphasis/headers anyway - this guarantees no stray "*", "#" or backticks reach
+    the user, whose chat UI renders replies as literal text.
+    """
+    lines = []
+    for line in text.split("\n"):
+        line = re.sub(r"^\s*#{1,6}\s*", "", line)      # "# Heading" -> "Heading"
+        line = re.sub(r"^(\s*)\*\s+", r"\1- ", line)   # "* item" bullet -> "- item"
+        lines.append(line)
+    text = "\n".join(lines)
+    text = text.replace("**", "").replace("__", "").replace("`", "")
+    text = text.replace("*", "")  # any remaining emphasis asterisks
+    return text
