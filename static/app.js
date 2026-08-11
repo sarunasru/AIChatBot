@@ -2,6 +2,25 @@
     "use strict";
 
     const STORAGE_KEY = "faq_assistant_history";
+    const SESSION_KEY = "faq_assistant_session_id";
+
+    // A random id, stable for this browser session, so the server can group the
+    // messages of one conversation together in the chat logs.
+    const sessionId = loadSessionId();
+
+    function loadSessionId() {
+        try {
+            let id = sessionStorage.getItem(SESSION_KEY);
+            if (!id) {
+                id = (crypto.randomUUID && crypto.randomUUID()) ||
+                    `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                sessionStorage.setItem(SESSION_KEY, id);
+            }
+            return id;
+        } catch {
+            return "";
+        }
+    }
 
     const messagesEl = document.getElementById("messages");
     const inputEl = document.getElementById("message-input");
@@ -102,6 +121,7 @@
                 body: JSON.stringify({
                     message: text,
                     history: history.slice(0, -1),
+                    session_id: sessionId,
                 }),
             });
 

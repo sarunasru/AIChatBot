@@ -12,6 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 KNOWLEDGE_DIR = BASE_DIR / "knowledge"
 TEMPLATES_DIR = BASE_DIR / "templates"
 STATIC_DIR = BASE_DIR / "static"
+DATA_DIR = BASE_DIR / "data"
 
 
 def _get_float(name: str, default: float) -> float:
@@ -70,6 +71,13 @@ class Settings:
     smtp_username: str = os.getenv("SMTP_USERNAME", "")
     smtp_password: str = os.getenv("SMTP_PASSWORD", "")
     smtp_use_tls: bool = os.getenv("SMTP_USE_TLS", "true").strip().lower() in ("1", "true", "yes")
+
+    # --- Chat logging (SQLite) --------------------------------------------
+    # Each user->assistant exchange is stored in this SQLite file. Keep it on a
+    # mounted volume (see docker-compose) so it survives container rebuilds.
+    chat_log_db_path: Path = DATA_DIR / os.getenv("CHAT_LOG_DB", "chat_logs.db")
+    # Logs older than this are pruned at startup. Set to 0 to keep forever.
+    chat_log_retention_days: int = _get_int("CHAT_LOG_RETENTION_DAYS", 90)
 
 
 settings = Settings()

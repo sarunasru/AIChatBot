@@ -20,7 +20,8 @@ project/
 │   ├── prompts.py           # System prompt template
 │   ├── config.py            # Settings loaded from .env
 │   ├── rate_limit.py        # Shared slowapi Limiter instance
-│   └── email_sender.py      # Contact-form email (Resend / SMTP)
+│   ├── email_sender.py      # Contact-form email (SMTP)
+│   └── chat_log.py          # Stores chat exchanges in a SQLite file
 ├── knowledge/                # Company knowledge (.md / .txt files)
 │   ├── company.md
 │   ├── faq.md
@@ -136,6 +137,8 @@ docker-compose.prod.yml up -d --build`).
 | `CONTACT_FROM_EMAIL` | From address for those emails (use one the SMTP server may send for) | (none) |
 | `CONTACT_RATE_LIMIT` | Per-IP limit on `POST /contact` | `5/hour` |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USERNAME` / `SMTP_PASSWORD` / `SMTP_USE_TLS` | SMTP relay used to send the contact emails | `-` / `587` / `-` / `-` / `true` |
+| `CHAT_LOG_DB` | SQLite filename for chat logs (under `data/`) | `chat_logs.db` |
+| `CHAT_LOG_RETENTION_DAYS` | Auto-delete logs older than this at startup (`0` = keep forever) | `90` |
 
 ## Contact Form (email to staff)
 
@@ -150,6 +153,26 @@ allowed to send for — usually the mailbox's own domain), and the `SMTP_*` conn
 (`SMTP_USERNAME` is normally the full email address). If email isn't configured, the
 button/form still render but sending returns a friendly error. The endpoint is rate-limited
 (`CONTACT_RATE_LIMIT`) and requires an explicit consent checkbox before it forwards anything.
+
+## Chat Logs (SQLite)
+
+Every successful `POST /chat` exchange (user message + assistant reply, a per-browser-session
+id, and a UTC timestamp) is stored in a **SQLite** file at `data/chat_logs.db` by
+`app/chat_log.py`. SQLite needs no separate database server — it is just a file — but the
+`data/` directory is mounted as a Docker volume so the database survives container rebuilds.
+Logging never blocks or breaks a chat: failures are only logged.
+
+Logs older than `CHAT_LOG_RETENTION_DAYS` (default 90) are pruned automatically at startup —
+keep this in mind for GDPR/data-retention purposes. Set it to `0` to keep logs indefinitely.
+
+Read the logs with any SQLite tool, e.g. inside the running container:
+
+```
+docker compose exec faq-assistant \
+  python -c "import sqlite3; [print(r) for r in sqlite3.connect('/app/data/chat_logs.db').execute('SELECT created_at, user_message, assistant_reply FROM chat_logs ORDER BY id DESC LIMIT 20')]"
+```
+
+or copy `data/chat_logs.db` off the server and open it in a GUI like DB Browser for SQLite.
 
 ## Embedding on Other Websites (e.g. VU Faculty Pages)
 

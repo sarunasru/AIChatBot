@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field, field_validator
 
 from app.ai import AIConfigError, AIRequestError, answer
+from app.chat_log import log_exchange
 from app.config import TEMPLATES_DIR, settings
 from app.email_sender import EmailConfigError, EmailSendError, send_contact_email
 from app.rate_limit import limiter
@@ -46,6 +47,7 @@ class ChatRequest(BaseModel):
 
     message: str = Field(min_length=1, max_length=MAX_MESSAGE_LENGTH)
     history: list[ChatMessage] = Field(default_factory=list)
+    session_id: str = Field(default="", max_length=64)
 
     @field_validator("message")
     @classmethod
@@ -143,6 +145,7 @@ async def chat(request: Request, payload: ChatRequest) -> JSONResponse:
             content={"error": "Įvyko netikėta klaida. Bandykite dar kartą."},
         )
 
+    log_exchange(payload.session_id, payload.message, reply)
     return JSONResponse(status_code=200, content=ChatResponse(reply=reply).model_dump())
 
 

@@ -5,3 +5,9 @@ __pycache__/
 venv/
 .DS_Store
 .claude/
+# Chat-log database (created at runtime, kept on a mounted volume)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+# Raw scraped source pages (curated into the top-level knowledge/*.md files)
+knowledge/temp/

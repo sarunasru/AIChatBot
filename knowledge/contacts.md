@@ -49,7 +49,7 @@ Darbo laikas priklauso nuo konkretaus fakulteto, pavyzdžiui:
 - Informacijos paslaugų departamento direktorė: doc. dr. Marija Prokopčik, tel. (0 5) 268 7101
 - Mokslinės komunikacijos ir technologijų departamento direktorė: dr. Žibutė Petrauskienė,
   tel. (0 5) 219 5090
-- Tyrimų ir paveldo kolekcijų departamento direktorė: Nijolė Klingaitė-Dasevičienė,
+- Mokslinių tyrimų ir paveldo rinkinių departamento direktorė: Nijolė Klingaitė-Dasevičienė,
   tel. (0 5) 268 7111
 
 ## Tarpbibliotekinis abonementas

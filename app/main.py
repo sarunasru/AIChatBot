@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
+from app.chat_log import init_db
 from app.config import STATIC_DIR, settings
 from app.knowledge_loader import load_knowledge_base
 from app.rate_limit import limiter
@@ -23,9 +24,11 @@ logger = logging.getLogger("faq_assistant")
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    """Load the company knowledge base into memory once, at startup."""
+    """Load the company knowledge base and prepare the chat-log database at startup."""
     knowledge = load_knowledge_base()
     logger.info("Loaded knowledge base (%d characters).", len(knowledge))
+    init_db()
+    logger.info("Chat-log database ready at %s.", settings.chat_log_db_path)
     yield
 
 
