@@ -6,9 +6,12 @@ bibliotekos paslaugomis be papildomos registracijos – pakanka pateikti student
 VU senjoro pažymėjimą.
 
 **Kl.: Koks bibliotekos darbo laikas?**
-A: Centrinė biblioteka mokslo metais dirba I–V 9:00–17:00, šeštadieniais 9:00–16:00. Vasarą
-(birželio 25 – rugpjūčio 24 d.) darbo laikas trumpesnis: I–V 9:00–16:00. Mokslinės
-komunikacijos ir informacijos centras (MKIC) Saulėtekyje dirba visą parą.
+A: Centrinė biblioteka darbo dienomis atidaroma 9:00, tačiau atskiros skaityklos dirba
+skirtingai – dalis iki 17:00, kitos iki 18:00, 20:00 ar 21:00 (ilgiausiai, iki 21:00, dirba
+Filologijos ir Filosofijos skaityklos bei Individualaus darbo kambarys B4). Šeštadieniais dalis
+skaityklų dirba 9:00–16:00, sekmadieniais Centrinė biblioteka nedirba. Mokslinės komunikacijos
+ir informacijos centras (MKIC) Saulėtekyje dirba visą parą (24/7). Tikslų konkrečios skaityklos
+darbo laiką verta pasitikslinti – žr. skiltį „Darbo laikas“.
 
 **Kl.: Ką daryti, jei reikiamos knygos nėra VU bibliotekos fonduose?**
 A: Galima pasinaudoti tarpbibliotekiniu abonementu – užsakyti knygą ar straipsnio kopiją iš

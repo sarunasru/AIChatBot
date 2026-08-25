@@ -5,10 +5,10 @@
 - Adresas: Universiteto g. 3, 01122 Vilnius
 - Informacija vartotojams: (0 5) 268 7147
 - Administracija: (0 5) 268 7100
-- Darbo laikas mokslo metais: I–V 9:00–17:00, šeštadieniais 9:00–16:00
-- Vasaros darbo laikas (birželio 25 – rugpjūčio 24 d.): I–V 9:00–16:00
-- Kai kurios specializuotos skaityklos dirba iki 21:00, kitos – iki 17:00 (tikslų konkrečios
-  skaityklos darbo laiką rekomenduojama tikslintis svetainėje biblioteka.vu.lt)
+- Darbo laikas: darbo dienomis atidaroma 9:00; atskiros skaityklos dirba skirtingai – dalis
+  iki 17:00, kitos iki 18:00, 20:00 ar 21:00. Šeštadieniais dalis skaityklų dirba 9:00–16:00,
+  sekmadieniais nedirba. Vasarą darbo laikas trumpesnis. Tikslų konkrečios skaityklos darbo
+  laiką žr. skiltyje „Darbo laikas“.
 
 ## Mokslinės komunikacijos ir informacijos centras (MKIC)
 
