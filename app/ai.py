@@ -65,11 +65,12 @@ def _build_messages(question: str, history: list[Message]) -> list[Message]:
     # Hybrid retrieval: add the website chunks most relevant to this question on
     # top of the always-on curated knowledge. Each chunk carries its source URL
     # so the assistant can link straight to the relevant page.
-    # Include the last couple of user turns so follow-ups ("what are his
-    # contacts?") still retrieve the chunk about the topic they refer to.
+    # Pass the recent user turns as separate context so follow-ups ("what are
+    # his contacts?") work, while a fresh new-topic question still matches on its
+    # own (search() takes the best match against either - see retrieval.search).
     recent_user = [e.get("content", "") for e in history if e.get("role") == "user"][-2:]
-    retrieval_query = " ".join([*recent_user, question]).strip()
-    chunks = search(retrieval_query)
+    context = " ".join(recent_user).strip() or None
+    chunks = search(question, context)
     if chunks:
         parts = []
         for c in chunks:

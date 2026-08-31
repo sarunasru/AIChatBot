@@ -17,7 +17,7 @@ import threading
 import numpy as np
 
 from app.config import settings
-from app.embeddings import EmbeddingError, embed_query
+from app.embeddings import EmbeddingError, embed_texts
 
 logger = logging.getLogger("faq_assistant")
 
@@ -81,8 +81,14 @@ def _build_fts(chunks: list[dict]) -> sqlite3.Connection:
     return conn
 
 
-def search(question: str, limit: int | None = None) -> list[dict]:
+def search(question: str, context: str | None = None, limit: int | None = None) -> list[dict]:
     """Return up to `limit` chunks most relevant to `question`.
+
+    If `context` (recent conversation) is given, a chunk is scored by the BEST
+    match against either the question or the context. This keeps follow-up
+    questions ("what are his contacts?") working via the context, while a new
+    topic ("is there a kids' room?") still matches on the question alone - so an
+    earlier topic can never drag the search off a fresh, self-contained question.
 
     Tries semantic (embedding) search first, then keyword search. Never raises -
     returns [] so the chat still answers from the curated core.
@@ -93,9 +99,11 @@ def search(question: str, limit: int | None = None) -> list[dict]:
 
     if _vectors is not None:
         try:
-            qvec = np.asarray(embed_query(question), dtype=np.float32)
-            qvec /= max(float(np.linalg.norm(qvec)), 1e-8)
-            scores = _vectors @ qvec
+            queries = [question] + ([context] if context else [])
+            qmat = np.asarray(embed_texts(queries), dtype=np.float32)
+            qmat /= np.clip(np.linalg.norm(qmat, axis=1, keepdims=True), 1e-8, None)
+            # Best (max) similarity to any query, per chunk.
+            scores = (_vectors @ qmat.T).max(axis=1)
             top = np.argsort(-scores)[:k]
             return [_chunks[i] for i in top]
         except EmbeddingError as exc:
