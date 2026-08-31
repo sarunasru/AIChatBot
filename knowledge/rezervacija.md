@@ -2,6 +2,8 @@
 
 Darbo vietas ir kambarius galima rezervuoti internetu adresu rezervacijos.biblioteka.vu.lt.
 
+**Svarbu:** individualaus ir grupinio darbo kambarius bei rezervuojamas darbo vietas gali rezervuoti tik VU bendruomenės nariai (studentai, dėstytojai, mokslininkai, doktorantai). Ne VU bendruomenės nariai (išorės vartotojai, pvz., kitų universitetų studentai) užsiregistravę gali naudotis bibliotekos skaityklomis ir atviromis erdvėmis, tačiau individualių ar grupinių darbo kambarių rezervuoti negali.
+
 ## Individualaus darbo vietos
 
 - **Centrinėje bibliotekoje** galima rezervuoti vietą Baltojoje salėje, Profesorių skaitykloje ir Individualaus darbo kambaryje B4. Bakalauro ir magistro studentai rezervuoja nuo 1 valandos iki 7 dienų; VU mokslininkai, dėstytojai ir doktorantai – ilgesniam laikui.
