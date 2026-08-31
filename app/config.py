@@ -72,6 +72,25 @@ class Settings:
     smtp_password: str = os.getenv("SMTP_PASSWORD", "")
     smtp_use_tls: bool = os.getenv("SMTP_USE_TLS", "true").strip().lower() in ("1", "true", "yes")
 
+    # --- Retrieval (multilingual embeddings over the scraped website chunks) ---
+    # Cleaned chunks produced by tools/clean_scrape.py, plus their precomputed
+    # embedding vectors (tools/build_embeddings.py). Loaded at startup; the top
+    # matches by cosine similarity are added to each prompt.
+    site_chunks_path: Path = BASE_DIR / "knowledge" / "site_chunks.jsonl"
+    site_vectors_path: Path = BASE_DIR / "knowledge" / "site_vectors.npy"
+    # How many chunks to pull into the prompt per question.
+    retrieval_top_k: int = _get_int("RETRIEVAL_TOP_K", 5)
+
+    # Embeddings API (OpenAI-compatible). Multilingual so English/Lithuanian/etc.
+    # questions all match the Lithuanian chunks. Defaults to OpenAI; swap the
+    # base URL/model for another provider (e.g. Jina) via .env.
+    embedding_api_key: str = os.getenv("EMBEDDING_API_KEY", "")
+    embedding_base_url: str = os.getenv("EMBEDDING_BASE_URL", "https://api.openai.com/v1")
+    embedding_model: str = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+    # Optional output dimension (OpenAI text-embedding-3-* supports shrinking).
+    # 0 = provider default. Smaller = smaller vector file, slightly less precise.
+    embedding_dimensions: int = _get_int("EMBEDDING_DIMENSIONS", 512)
+
     # --- Chat logging (SQLite) --------------------------------------------
     # Each user->assistant exchange is stored in this SQLite file. Keep it on a
     # mounted volume (see docker-compose) so it survives container rebuilds.

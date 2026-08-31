@@ -23,6 +23,7 @@ from openai import (
 
 from app.config import settings
 from app.knowledge_loader import get_cached_knowledge
+from app.retrieval import search
 from app.prompts import build_system_prompt
 
 Message = dict[str, str]
@@ -60,6 +61,28 @@ def _get_client() -> OpenAI:
 def _build_messages(question: str, history: list[Message]) -> list[Message]:
     """Assemble the full message list: system prompt, history, then the question."""
     knowledge = get_cached_knowledge()
+
+    # Hybrid retrieval: add the website chunks most relevant to this question on
+    # top of the always-on curated knowledge. Each chunk carries its source URL
+    # so the assistant can link straight to the relevant page.
+    # Include the last couple of user turns so follow-ups ("what are his
+    # contacts?") still retrieve the chunk about the topic they refer to.
+    recent_user = [e.get("content", "") for e in history if e.get("role") == "user"][-2:]
+    retrieval_query = " ".join([*recent_user, question]).strip()
+    chunks = search(retrieval_query)
+    if chunks:
+        parts = []
+        for c in chunks:
+            src = f"(Šaltinis: {c['url']})\n" if c.get("url") else ""
+            parts.append(f"{src}{c['text']}")
+        extra = "\n\n---\n\n".join(parts)
+        knowledge = (
+            f"{knowledge}\n\n"
+            "Papildoma informacija iš bibliotekos svetainės (aktuali šiam klausimui). "
+            "Kur tinka, atsakyme gali nurodyti šaltinio adresą:\n"
+            f"\"\"\"\n{extra}\n\"\"\""
+        )
+
     system_prompt = build_system_prompt(knowledge)
 
     messages: list[Message] = [{"role": "system", "content": system_prompt}]

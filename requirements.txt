@@ -1,7 +1,8 @@
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
-openai==1.59.6  # used only as the client library for the OpenRouter API
+openai==1.59.6  # client for the OpenRouter chat API and the embeddings API
 pydantic==2.10.4
 python-dotenv==1.0.1
 jinja2==3.1.5
 slowapi==0.1.9
+numpy==2.2.1  # cosine similarity over the chunk embedding vectors

@@ -9,5 +9,6 @@ venv/
 data/*.db
 data/*.db-wal
 data/*.db-shm
-# Raw scraped source pages (curated into the top-level knowledge/*.md files)
+# Raw scraped source pages (cleaned into knowledge/site_chunks.jsonl for retrieval)
 knowledge/temp/
+knowledge/temp2/

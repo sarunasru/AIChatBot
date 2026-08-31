@@ -4,6 +4,10 @@
     const STORAGE_KEY = "faq_assistant_history";
     const SESSION_KEY = "faq_assistant_session_id";
 
+    // Matches plain-text URLs (with or without http/https). Declared up here so
+    // it's initialised before the history re-render loop below calls linkify().
+    const URL_RE = /((?:https?:\/\/)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:lt|com|org|net|eu|io|dev)(?:\/[^\s<]*)?)/gi;
+
     // A random id, stable for this browser session, so the server can group the
     // messages of one conversation together in the chat logs.
     const sessionId = loadSessionId();
@@ -59,13 +63,33 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    // Turn plain-text URLs into clickable links. Input is HTML-escaped first,
+    // so this is safe against injection. (URL_RE is declared at the top.)
+    function linkify(content) {
+        return escapeHtml(content).replace(URL_RE, (match) => {
+            // Keep trailing sentence punctuation outside the link.
+            const trail = (match.match(/[.,;:!?)]+$/) || [""])[0];
+            const url = trail ? match.slice(0, -trail.length) : match;
+            const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+            return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>${trail}`;
+        });
+    }
+
     function renderMessage(role, content) {
         const wrapper = document.createElement("div");
         wrapper.className = `message ${role}`;
 
         const bubble = document.createElement("div");
         bubble.className = "bubble";
-        bubble.textContent = content;
+        bubble.innerHTML = linkify(content);
 
         wrapper.appendChild(bubble);
         messagesEl.appendChild(wrapper);

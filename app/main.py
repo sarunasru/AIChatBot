@@ -16,6 +16,7 @@ from app.chat_log import init_db
 from app.config import STATIC_DIR, settings
 from app.knowledge_loader import load_knowledge_base
 from app.rate_limit import limiter
+from app.retrieval import init_retrieval
 from app.routes import router
 
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +30,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     logger.info("Loaded knowledge base (%d characters).", len(knowledge))
     init_db()
     logger.info("Chat-log database ready at %s.", settings.chat_log_db_path)
+    init_retrieval()
     yield
 
 
